@@ -1,21 +1,17 @@
 import { Container, Col, Row } from "react-bootstrap";
-import Login from "./Login";
-import Register from "./Register";
+import Account from "./Account";
 
 function App() {
   return (
     <Container>
       <Row>
-        {/* Register */}
-        <Col xs={12} sm={12} md={6} lg={6}>
-          <Register />
-        </Col>
-
-        {/* Login */}
-        <Col xs={12} sm={12} md={6} lg={6}>
-          <Login />
+        <Col className="text-center">
+          <h1>React Authentication Tutorial</h1>
         </Col>
       </Row>
+
+      {/* account */}
+      <Account />
     </Container>
   );
 }

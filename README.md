@@ -6,6 +6,7 @@ This repository houses a project built during the course of learning how to buil
 * [React Authentication - Register](https://dev.to/ebereplenty/react-authentication-part-1-39aj)
 * [React Authentication - LOGIN](https://dev.to/ebereplenty/react-authentication-login-h3i)
 * [React Authentication - Protecting and Accessing Routes/Endpoints](https://dev.to/ebereplenty/react-authentication-protecting-and-accessing-routes-endpoints-96h)
+* [Printing in React Made Easy With React-To-Print](https://dev.to/ebereplenty/printing-in-react-made-easy-with-react-to-print-4b3k)
 
 ## Dependencies
 * [Axios](https://www.npmjs.com/package/axios)

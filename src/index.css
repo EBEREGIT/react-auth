@@ -12,15 +12,23 @@ code {
     monospace;
 }
 
-#navigation{
+#navigation {
   margin-top: 5%;
   margin-bottom: 5%;
 }
 
-#navigation a{
+#navigation a {
   margin-right: 10%;
 }
 
-#navigation a:last-child{
+#navigation a:last-child {
   margin-right: 0;
+}
+
+thead th {
+  padding-right: 50px;
+}
+
+#print_component{
+  text-align: center;
 }

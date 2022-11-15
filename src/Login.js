@@ -13,11 +13,10 @@ export default function Login() {
   const handleSubmit = (e) => {
     // prevent the form from refreshing the whole page
     e.preventDefault();
-
     // set configurations
     const configuration = {
-      method: "post",
-      url: "https://nodejs-mongodb-auth-app.herokuapp.com/login",
+      method: "POST",
+      url: "login",
       data: {
         email,
         password,

@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
+import Select from 'react-select'
 import axios from "axios";
 import Cookies from "universal-cookie";
+import Convenios from "./Design/Components/Consultas/Convenios";
+import Despesas from "./Design/Components/Consultas/Despesas";
+import Orgaos from "./Design/Components/Consultas/Orgaos";
+import Emendas from "./Design/Components/Consultas/Emendas"
 const cookies = new Cookies();
+
 
 // get token generated on login
 const token = cookies.get("TOKEN");
@@ -10,27 +16,32 @@ const token = cookies.get("TOKEN");
 export default function AuthComponent() {
   // set an initial state for the message we will receive after the API call
   const [message, setMessage] = useState("");
-
+  const [tipoConsulta, setTipoConsulta] = useState('');
+  const tiposConsulta  = [
+    {
+      "Convenios": {
+        "Descricao": "Convenios"
+      }
+    },
+    {
+      "Orgaos":{
+        "Descricao": "Orgaos"
+      }
+    },
+    {
+      "Despesas": {
+        "Descricao": "Despesas"
+      }
+    },
+    {
+      "Emendas": {
+        "Descricao": "Emendas"
+      }
+    }
+  ]
   // useEffect automatically executes once the page is fully loaded
   useEffect(() => {
-    // set configurations for the API call here
-    const configuration = {
-      method: "get",
-      url: "https://nodejs-mongodb-auth-app.herokuapp.com/auth-endpoint",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-
-    // make the API call
-    axios(configuration)
-      .then((result) => {
-        // assign the message in our result to the message we initialized above
-        setMessage(result.data.message);
-      })
-      .catch((error) => {
-        error = new Error();
-      });
+    
   }, []);
 
   // logout
@@ -41,13 +52,30 @@ export default function AuthComponent() {
     window.location.href = "/";
   }
 
+  
+  const optionsConsulta = [
+    { value: 'Convenios', label: 'Convênios do Poder Executivo Federal' },
+    { value: 'Despesas', label: 'Despesas Públicas' },
+    { value: 'Emendas', label: 'Emendas parlamentares' },
+    { value: 'Orgaos', label: 'Órgãos' },
+  ]
+  const handleOptionsConsulta =(e)=>{
+    console.log(e)
+    setTipoConsulta(e.value);
+  }
+
+  
+ 
   return (
-    <div className="text-center">
-      <h1>Auth Component</h1>
+    <div className="text-center">     
 
       {/* displaying our message from our API call */}
-      <h3 className="text-danger">{message}</h3>
-
+      
+      <Select placeholder={"Escolha um tipo de Consulta"} options={optionsConsulta} onChange={e => handleOptionsConsulta(e)} onClick={e => handleOptionsConsulta(e)}/>
+      { tipoConsulta === "Convenios" &&<Convenios />}
+      { tipoConsulta === "Despesas" &&<Despesas />}
+      { tipoConsulta === "Emendas" &&<Emendas />}
+      { tipoConsulta === "Orgaos" &&<Orgaos />}
       {/* logout */}
       <Button type="submit" variant="danger" onClick={() => logout()}>
         Logout

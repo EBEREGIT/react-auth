@@ -2,6 +2,7 @@
   "proxy": "http://localhost:4000/",
   "name": "react-auth",
   "version": "0.1.0",
+  "home": "http://alandgmendes.github.io/react-auth",
   "private": true,
   "dependencies": {
     "@emotion/styled": "^11.10.5",

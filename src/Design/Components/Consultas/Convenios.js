@@ -1,95 +1,138 @@
-import react, { useEffect, useState } from  'react';
+import  { useEffect, useState } from  'react';
 import { Button } from "react-bootstrap";
 import Select from 'react-select'
 import axios from "axios";
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers';
-import TextField from '@mui/material/TextField';
-import { DateExtract } from './../../../Utils/Tools';
+import { validarCNPJ } from './../../../Utils/Tools';
 import dataSiafi from './../../../Utils/orgaosSiafi.json';
-import dataMunicipios from './../../../Utils/municipiosIBGE.json';
+import dataMunicipios from './../../../Utils/municipiosSiafi.json';
+import CpfCnpj from "@react-br-forms/cpf-cnpj-mask";
+import { jsPDF } from "jspdf";
+import autoTable from 'jspdf-autotable';
 
 const  Convenios = () =>{
 
-    const [dataConvenio, setDataConvenio] = useState('');
-    const [codigoIbge, setCodigoIbge] = useState('');
+
+    const [codigoSIAFI, setCodigoSiafi] = useState('');
+    const [cnpjValido, setCnpjValido] = useState(false);
     const [optionsOrgaosSiafi, setOptionsOrgaosSiafi] = useState([{}]);
     const [optionsMunicipios, setOptionsMunicipios] = useState([{}]);
     const [orgaoSiafi, setOrgaoSiafi] = useState();
-    const [municipio, setMunicipio ] = useState({});
     const [dataLoaded, setDataLoaded] = useState(false);
+    const [orgaoNome, setOrgaoNome] = useState('');
+    const [municipioNome, setMunicipioNome] = useState('');
+    const [cnpj, setCnpj] = useState("");
+    const [mask, setMask] = useState("");
 
-    const fetchTransparencia = (data) =>{
-        console.log(dataConvenio)
-        fetch('https://api.portaldatransparencia.gov.br/api-de-dados/despesas/documentos?dataEmissao=15%2F01%2F2020&fase=2&gestao=123&pagina=1&unidadeGestora=123', {
-          method: "GET",
-          headers: {
-            "chave-api-dados": "cf113c73ed26bc6783e7448d0d018ba6",
-            "accept": "*/*"
-          }
+    const fetchConvenios = (data) =>{
+      const configuration = {
+        method: "get",
+        url: `http://localhost:3000/convenio/municipio=${codigoSIAFI}&orgao=${orgaoSiafi}&cnpj=${cnpj}`,
+      };
+      axios(configuration)
+        .then((result) => {
+          printConvenios(result.data);
         })
-        .then(response => response.json())  // converter para json
-        .then(json => console.log(json))    //imprimir dados no console
-        .catch(err => console.log('Erro de solicitação', err));
-    }
-
-    const setData = (data) =>{
-      let dataArray =  DateExtract(data);
-      setDataConvenio(dataArray);
+        .catch((error) => {
+          error = new Error();
+        });
     }
 
     const handleOptionsOrgaoSiafi =(e)=>{
       setOrgaoSiafi(e.value);
-      console.log(e.value)
+      setOrgaoNome(e.label);
     }
 
     const handleOptionsMunicipio =(e)=>{
-      setMunicipio(e);
-    }
-    
-    const fetchLocalSiafi = ()=>{
-      console.log(dataSiafi)
+      setCodigoSiafi(e.value);
+      setMunicipioNome(e.label);
     }
 
-    
+    const handleCnpjChange = (e)=>{
+      let numberPattern = /\d+/g;
+      const cnpjInput = e.currentTarget.value;
+      let numbersCNPJ = cnpjInput.match(numberPattern).join('');
+      setCnpj(numbersCNPJ);
+      const isValido = validarCNPJ(cnpjInput)
+      setCnpjValido(isValido)
+    }
+
 
     useEffect(() =>{
       if(dataLoaded === false){        
         let optionsSiafi = dataSiafi.map(item => ({"value": item.codigo, "label" : item.descricao}));        
         setOptionsOrgaosSiafi(optionsSiafi);
-        let optionsMunicipios = dataMunicipios.map(item => ({"value": item.codigoIbge, "label" : item.nome}));        
+        let optionsMunicipios = dataMunicipios.map(item => ({"value": item.codigoSiafi, "label" : item.nomeMunicipio}));        
         setOptionsOrgaosSiafi(optionsSiafi);
         setOptionsMunicipios(optionsMunicipios)
         setDataLoaded(true);
       }
     })
 
+
+    const printConvenios = (json) => {
+      const conveniosData = json.data;
+      const pdf = new jsPDF("l", "pt", "a4");
+      const columns = [
+        "Número convênio",
+        "UF",
+        "Nome município",
+        "Situação convênio",
+        "Nome órgão",
+        "Nome convenente",
+        "Tipo ente",
+        "Tipo convenente",
+        "Valor liberado",
+        "Valor última liberação",
+        "Data última liberação"
+      ];
+      var rows = [];
+      for (let i = 0; i < conveniosData.length; i++) {
+
+        var temp = [
+          conveniosData[i].NumeroConvenio,
+          conveniosData[i].UF,
+          conveniosData[i].NomeMunicipio,
+          conveniosData[i].SituacaoConvenio,
+          conveniosData[i].NomeOrgaoConcedente,
+          conveniosData[i].NomeConvenente,
+          conveniosData[i].TipoConvenente,
+          conveniosData[i].TipoEnteConvenente,
+          conveniosData[i].ValorLiberado,
+          conveniosData[i].ValorUltimaLiberacao,
+          conveniosData[i].DataUltimaLiberacao,
+        ];
+        rows.push(temp);
+      }
+      pdf.text(235, 40, "Convênios do governo Federal selecionados");
+      
+      pdf.autoTable(columns, rows,{
+        cellWidth: "wrap",
+    
+        startY: 20
+      });
+      console.log(pdf.output("data out"));
+      pdf.save("pdf");
+    };
+
+  
+
     return (
         <div className="text-center">     
     
           {/* displaying our message from our API call */}
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              
-              value={""}
-              onChange={(newValue) => {
-                setData(newValue);
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
+          
               <br />
-              
+              {!cnpjValido && <span>*</span>}
+              <CpfCnpj
+                value={cnpj}
+                onChange={e =>handleCnpjChange(e)}
+              />
+              {!cnpjValido && <span>CNPJ inválido</span>}
           <Select placeholder={"Escolha o órgão"} options={optionsOrgaosSiafi} onChange={e => handleOptionsOrgaoSiafi(e)} onClick={e => handleOptionsOrgaoSiafi(e)}/>
           <Select placeholder={"Escolha o município"} options={optionsMunicipios} onChange={e => handleOptionsMunicipio(e)} onClick={e => handleOptionsMunicipio(e)}/>
-          <Button type="submit" variant="danger" onClick={() => fetchTransparencia()}>
+          {cnpjValido && <Button type="submit" variant="danger" onClick={() => fetchConvenios()}>
             Consultar convênios
-          </Button>
-          <Button type="submit" variant="danger" onClick={() => fetchLocalSiafi()}>
-            fetch json
-          </Button>
+          </Button>}
         </div>
       );
     

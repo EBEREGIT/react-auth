@@ -16,7 +16,7 @@ export default function Login() {
     // set configurations
     const configuration = {
       method: "POST",
-      url: "login",
+      url: "http://localhost:4000/login",
       data: {
         email,
         password,
@@ -26,6 +26,7 @@ export default function Login() {
     // make the API call
     axios(configuration)
       .then((result) => {
+        debugger;
         // set the cookie
         cookies.set("TOKEN", result.data.token, {
           path: "/",

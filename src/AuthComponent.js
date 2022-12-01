@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import Select from 'react-select'
+import Select from 'react-select';
 import axios from "axios";
 import Cookies from "universal-cookie";
 import Convenios from "./Design/Components/Consultas/Convenios";
-import Despesas from "./Design/Components/Consultas/Despesas";
+import Programas from "./Design/Components/Consultas/Programas";
 import Orgaos from "./Design/Components/Consultas/Orgaos";
 import Emendas from "./Design/Components/Consultas/Emendas"
 const cookies = new Cookies();
@@ -55,12 +55,11 @@ export default function AuthComponent() {
   
   const optionsConsulta = [
     { value: 'Convenios', label: 'Convênios do Poder Executivo Federal' },
-    { value: 'Despesas', label: 'Despesas Públicas' },
+    { value: 'Programas', label: 'Programas' },
     { value: 'Emendas', label: 'Emendas parlamentares' },
     { value: 'Orgaos', label: 'Órgãos' },
   ]
   const handleOptionsConsulta =(e)=>{
-    console.log(e)
     setTipoConsulta(e.value);
   }
 
@@ -73,10 +72,11 @@ export default function AuthComponent() {
       
       <Select placeholder={"Escolha um tipo de Consulta"} options={optionsConsulta} onChange={e => handleOptionsConsulta(e)} onClick={e => handleOptionsConsulta(e)}/>
       { tipoConsulta === "Convenios" &&<Convenios />}
-      { tipoConsulta === "Despesas" &&<Despesas />}
+      { tipoConsulta === "Programas" &&<Programas />}
       { tipoConsulta === "Emendas" &&<Emendas />}
       { tipoConsulta === "Orgaos" &&<Orgaos />}
       {/* logout */}
+      <br/><br/><br/><br/><br/><br/><br/><br/>
       <Button type="submit" variant="danger" onClick={() => logout()}>
         Logout
       </Button>

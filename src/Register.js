@@ -21,11 +21,9 @@ export default function Register() {
         password,
       },
     };
-debugger
     // make the API call
     axios(configuration)
       .then((result) => {
-        debugger
         setRegister(true);
       })
       .catch((error) => {

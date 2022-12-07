@@ -16,7 +16,7 @@ export default function Login() {
     // set configurations
     const configuration = {
       method: "POST",
-      url: "https://isaacdev.herokuapp.com/login",
+      url: "https://izacdev.herokuapp.com/login",
       data: {
         email,
         password,

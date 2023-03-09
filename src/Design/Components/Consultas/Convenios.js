@@ -22,18 +22,20 @@ const  Convenios = () =>{
     const [municipioNome, setMunicipioNome] = useState('');
     const [cnpj, setCnpj] = useState("");
     const [mask, setMask] = useState("");
-
+    
     const fetchConvenios = (data) =>{
+      debugger;
       const configuration = {
         method: "get",
-        url: `http://localhost:3000/convenio/municipio=${codigoSIAFI}&orgao=${orgaoSiafi}&cnpj=${cnpj}`,
+        url: `https://nervous-pink-sunglasses.cyclic.app/convenio/${codigoSIAFI}/${cnpj}/${orgaoSiafi}`,
       };
       axios(configuration)
         .then((result) => {
+          debugger;
           printConvenios(result.data);
         })
         .catch((error) => {
-          error = new Error();
+          console.log(error)
         });
     }
 

@@ -1,7 +1,7 @@
 {
   "name": "react-auth",
   "version": "0.1.0",
-  "homepage": "http://alandgmendes.github.io/react-auth/",
+  "homepage": "http://localhost:3000",
   "private": true,
   "dependencies": {
     "@emotion/styled": "^11.10.5",

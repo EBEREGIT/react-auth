@@ -16,17 +16,17 @@ export default function Login() {
     // set configurations
     const configuration = {
       method: "POST",
-      url: "https://izacdev.herokuapp.com/login",
+      url: "https://nervous-pink-sunglasses.cyclic.app/login",
       data: {
         email,
         password,
       },
     };
-
+    console.log(configuration)
     // make the API call
     axios(configuration)
       .then((result) => {
-        debugger;
+        
         // set the cookie
         cookies.set("TOKEN", result.data.token, {
           path: "/",
@@ -37,6 +37,7 @@ export default function Login() {
         setLogin(true);
       })
       .catch((error) => {
+        console.log(error);
         error = new Error();
       });
   };

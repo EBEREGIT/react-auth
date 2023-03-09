@@ -63,7 +63,7 @@ const  Programas = () =>{
   const fetchConvenios = (data) =>{
     const configuration = {
       method: "get",
-      url: `http://localhost:3000/programa/anodisponibilizacao=${anoDisponibilizacao}&situacao=${sitPrograma}&codorgao=${codOrgPrograma}&id=${codPrograma}&uf=${uf}&qualificacaoProponente=${optionProponente}`,
+      url: `https://nervous-pink-sunglasses.cyclic.app/programa/${anoDisponibilizacao}/${sitPrograma}/${uf}/${codOrgPrograma}`,
     };
     console.log(configuration)
     axios(configuration)

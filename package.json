@@ -1,15 +1,12 @@
 {
   "name": "react-auth",
   "version": "0.1.0",
-  "homepage": "http://localhost:3000",
-  "private": true,
+  "homepage": "https://alandgmendes.github.io/react-auth/isaac",
+  "private": false,
   "dependencies": {
     "@emotion/styled": "^11.10.5",
     "@react-br-forms/cpf-cnpj-mask": "^1.0.6",
     "@react-pdf-viewer/core": "^3.8.0",
-    "@testing-library/jest-dom": "^5.11.6",
-    "@testing-library/react": "^11.2.2",
-    "@testing-library/user-event": "^12.2.2",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
     "dayjs": "^1.11.6",

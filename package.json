@@ -1,7 +1,7 @@
 {
   "name": "react-auth",
   "version": "0.1.0",
-  "homepage": "https://alandgmendes.github.io/react-auth/isaac",
+  "homepage": "https://alandgmendes.github.io/react-auth",
   "private": false,
   "dependencies": {
     "@emotion/styled": "^11.10.5",

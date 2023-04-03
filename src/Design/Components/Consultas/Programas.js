@@ -1,4 +1,5 @@
 import react, { useEffect, useState } from  'react';
+import { read, utils, writeFileXLSX } from 'xlsx';
 import { Button } from "react-bootstrap";
 import Select from 'react-select'
 import axios from "axios";
@@ -52,26 +53,27 @@ const  Programas = () =>{
     setUf(e.value)
   }
 
-  const handleCodOrg = (e) => {
-    setCodOrgPrograma(e.currentTarget.value)
-  }
 
-  const handleCodPrograma = (e) => {
-    setCodPrograma(e.currentTarget.value)
-  }
 
-  const fetchConvenios = (data) =>{
+  const fetchProgramas = (e) =>{
+    const option = e.currentTarget.id;
     const urlBase = process.env.REACT_APP_URL_BASE;
     debugger;
     const configuration = {
       method: "get",
-      url: `${urlBase}programa/${anoDisponibilizacao}/${sitPrograma}/${uf}/${codOrgPrograma}`,
+      url: `https://nervous-pink-sunglasses.cyclic.app/programa/${anoDisponibilizacao}/${sitPrograma}/${uf}/`,
     };
     console.log(configuration)
     axios(configuration)
       .then((result) => {
         console.log(result);
-        printProgramas(result.data)
+        if(option === "pdfButton"){
+          printProgramas(result.data)
+        }
+        if(option === "xlsxButton"){
+          gerarXlsx(result.data)
+        }
+        
       })
       .catch((error) => {
         error = new Error();
@@ -136,6 +138,14 @@ const  Programas = () =>{
       setUfFetched(true)
     }   
   })
+
+  const gerarXlsx = (data) =>{
+    console.log(data);
+    const ws = utils.json_to_sheet(data.data);
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Data");
+    writeFileXLSX(wb, "programas.xlsx");
+  }
     
 
   return (
@@ -143,21 +153,21 @@ const  Programas = () =>{
       <label>Escolha a situação:</label>
       <Select options={situationOptions} onChange={e => handleSituation(e)} />
       <label>Escolha a UF:</label>
-      <Select options={ufOptions} onChange={e => handleUfChange(e)} />
-      <label>Escolha a qualificação do proponente:</label>
-      <Select options={proponenteOptions} onChange={e => handleProponenteOptions(e)} />
-      <label>Digite o Código do órgão do programa:</label>
-      <input value={codOrgPrograma} onChange={e => handleCodOrg(e)} />
-      <br />
-      <label>Digite o código do programa:</label>
-      <input value={codPrograma} onChange={e => handleCodPrograma(e)} />
-      <br />
+      <Select options={ufOptions} onChange={e => handleUfChange(e)} />     
       <label>Digite o ano:</label>
       <input value={anoDisponibilizacao} onChange={e => handleAno(e)} />
       <br />
-      <Button type="submit" variant="danger" onClick={e => fetchConvenios(e)}>
-        Consultar Despesas
-      </Button>
+      {(anoDisponibilizacao > 1990) &&
+      <div>
+        <Button id="pdfButton" type="submit" variant="danger" onClick={e => fetchProgramas(e)}>
+        Gerar pdf
+        </Button>
+        <Button id="xlsxButton" type="submit" variant="success" onClick={e => fetchProgramas(e)}>
+          Gerar xlsx
+        </Button>
+      </div>
+      }
+      
     </div>
   );
     

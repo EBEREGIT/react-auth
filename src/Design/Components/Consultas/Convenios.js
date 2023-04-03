@@ -1,4 +1,5 @@
-import  { useEffect, useState } from  'react';
+import  { useEffect, useState, useCallback } from  'react';
+import { read, utils, writeFileXLSX } from 'xlsx';
 import { Button } from "react-bootstrap";
 import Select from 'react-select'
 import axios from "axios";
@@ -20,19 +21,24 @@ const  Convenios = () =>{
     const [dataLoaded, setDataLoaded] = useState(false);
     const [orgaoNome, setOrgaoNome] = useState('');
     const [municipioNome, setMunicipioNome] = useState('');
+    const [ dataXlsx, setDataXlsx] = useState([]);
     const [cnpj, setCnpj] = useState("");
-    const [mask, setMask] = useState("");
     
-    const fetchConvenios = (data) =>{
-      debugger;
+    const fetchConvenios = async(e) =>{
+      const option = e.currentTarget.id;
+      const urlBase = process.env.REACT_APP_URL_BASE;
       const configuration = {
         method: "get",
-        url: `https://nervous-pink-sunglasses.cyclic.app/convenio/${codigoSIAFI}/${cnpj}/${orgaoSiafi}`,
+        url: `${urlBase}convenio/${codigoSIAFI}/${cnpj}/${orgaoSiafi}`,
       };
-      axios(configuration)
+      await axios(configuration)
         .then((result) => {
-          debugger;
-          printConvenios(result.data);
+          if (option === "pdfButton"){
+            printConvenios(result.data);
+          }
+          if (option === "xlsxButton") {
+            gerarXlsx(result.data);
+          } 
         })
         .catch((error) => {
           console.log(error)
@@ -116,7 +122,12 @@ const  Convenios = () =>{
       pdf.save("pdf");
     };
 
-  
+    const gerarXlsx = (data) =>{
+      const ws = utils.json_to_sheet(data.data);
+      const wb = utils.book_new();
+      utils.book_append_sheet(wb, ws, "Data");
+      writeFileXLSX(wb, "convenios.xlsx");
+    }
 
     return (
         <div className="text-center">     
@@ -132,8 +143,11 @@ const  Convenios = () =>{
               {!cnpjValido && <span>CNPJ inválido</span>}
           <Select placeholder={"Escolha o órgão"} options={optionsOrgaosSiafi} onChange={e => handleOptionsOrgaoSiafi(e)} onClick={e => handleOptionsOrgaoSiafi(e)}/>
           <Select placeholder={"Escolha o município"} options={optionsMunicipios} onChange={e => handleOptionsMunicipio(e)} onClick={e => handleOptionsMunicipio(e)}/>
-          {cnpjValido && <Button type="submit" variant="danger" onClick={() => fetchConvenios()}>
-            Consultar convênios
+          {cnpjValido && <Button id="pdfButton" type="submit" variant="danger" onClick={(e) => fetchConvenios(e)}>
+            Gerar pdf
+          </Button>}
+          {cnpjValido && <Button id="xlsxButton" type="submit" variant="success" onClick={(e) => fetchConvenios(e)}>
+            Gerar xlsx
           </Button>}
         </div>
       );

@@ -16,7 +16,7 @@ export default function Login() {
     // set configurations
     const configuration = {
       method: "POST",
-      url: "https://nervous-pink-sunglasses.cyclic.app/login",
+      url: "http://localhost:4000/login",
       data: {
         email,
         password,

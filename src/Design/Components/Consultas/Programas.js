@@ -61,9 +61,11 @@ const  Programas = () =>{
   }
 
   const fetchConvenios = (data) =>{
+    const urlBase = process.env.REACT_APP_URL_BASE;
+    debugger;
     const configuration = {
       method: "get",
-      url: `https://nervous-pink-sunglasses.cyclic.app/programa/${anoDisponibilizacao}/${sitPrograma}/${uf}/${codOrgPrograma}`,
+      url: `${urlBase}programa/${anoDisponibilizacao}/${sitPrograma}/${uf}/${codOrgPrograma}`,
     };
     console.log(configuration)
     axios(configuration)

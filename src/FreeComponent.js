@@ -13,6 +13,7 @@ export default function FreeComponent() {
       url: "https://nodejs-mongodb-auth-app.herokuapp.com/free-endpoint",
     };
 
+    
     // make the API call
     axios(configuration)
       .then((result) => {

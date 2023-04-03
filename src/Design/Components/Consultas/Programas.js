@@ -16,8 +16,6 @@ const  Programas = () =>{
   
   const [anoDisponibilizacao, setAnoDisponibilizacao] = useState("");
   const [sitPrograma, setSitPrograma] = useState("");
-  const [codOrgPrograma, setCodOrgPrograma] = useState("");
-  const [codPrograma, setCodPrograma] = useState("");
   const [uf, setUf] = useState("");
   const [optionProponente, setOptionProponente] = useState('')
 

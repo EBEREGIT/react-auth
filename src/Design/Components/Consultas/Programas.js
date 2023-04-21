@@ -1,24 +1,20 @@
 import react, { useEffect, useState } from  'react';
-import { read, utils, writeFileXLSX } from 'xlsx';
+import { utils, writeFileXLSX } from 'xlsx';
 import { Button } from "react-bootstrap";
 import Select from 'react-select'
 import axios from "axios";
-import { validarCNPJ } from './../../../Utils/Tools';
-import dataSiafi from './../../../Utils/orgaosSiafi.json';
-import dataMunicipios from './../../../Utils/municipiosSiafi.json';
 import ufList from './../../../Utils/ufs.json';
-import CpfCnpj from "@react-br-forms/cpf-cnpj-mask";
 import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable';
-
+import Timbradosuperior from '../../../assets/cabecalhobase64.txt';
+import Timbradoinferior from '../../../assets/rodapebase64.txt';
 const  Programas = () =>{
 
   
   const [anoDisponibilizacao, setAnoDisponibilizacao] = useState("");
   const [sitPrograma, setSitPrograma] = useState("");
   const [uf, setUf] = useState("");
-  const [optionProponente, setOptionProponente] = useState('')
-
+  const [headerFooter, setHeaderFooter] = useState("");
   const [ufFetched, setUfFetched] = useState(false);
   const [ufOptions, setUfOptions] = useState([]);
 
@@ -29,19 +25,10 @@ const  Programas = () =>{
     {value: "CADASTRADO", label: "Cadastrado"},
   ]
 
-  const proponenteOptions = [
-    {value:"RECEB_PROP", label: "Proposta voluntária"},
-    {value:"EMENDA_PAR", label: "Proposta de porponente de emenda parlamentar"},
-    {value:"BENEF_ESP", label: "Proposta de benefício exclusivo do proponente"},
-  ]
-
   const handleAno = (e) =>{
     setAnoDisponibilizacao(e.currentTarget.value)
   }
 
-  const handleProponenteOptions = (e) =>{    
-    setOptionProponente(e.value)
-  }
 
   const handleSituation = (e) => {
     setSitPrograma(e.value)
@@ -51,17 +38,17 @@ const  Programas = () =>{
     setUf(e.value)
   }
 
-
+  const handleHeaderFooterChange = (event) => {
+    setHeaderFooter(event.target.value);
+  };
 
   const fetchProgramas = (e) =>{
     const option = e.currentTarget.id;
     const urlBase = process.env.REACT_APP_URL_BASE;
-    debugger;
     const configuration = {
       method: "get",
-      url: `https://nervous-pink-sunglasses.cyclic.app/programa/${anoDisponibilizacao}/${sitPrograma}/${uf}/`,
+      url: `http://localhost:4000/programas/${anoDisponibilizacao}/${sitPrograma}/${uf}/`,
     };
-    console.log(configuration)
     axios(configuration)
       .then((result) => {
         console.log(result);
@@ -78,14 +65,22 @@ const  Programas = () =>{
       });
   }
 
-  const printProgramas = (json) => {
+  const printProgramas = async(json) => {
     const programasData = json.data;
-    console.log(programasData);
+    const cabecalhoTxt =  await fetch(Timbradosuperior)
+      .then(response => response.text())
+      .then(text => {return text;});
+    var cabecalhoBase64 = `data:image/png;base64,` + cabecalhoTxt;
+    const rodapeTxt =  await fetch(Timbradoinferior)
+      .then(response => response.text())
+      .then(text => {return text;});
+    var rodapeBase64 = `data:image/png;base64,` + rodapeTxt;
+    debugger;
     const pdf = new jsPDF("l", "pt", "a3");
 
     const columns = [
-      "Nome do programa",
-      "Código programa",
+      "Dados do programa",
+      "Dados do órgão",
       "Data da disponibilização",
       "Abertura (proposta voluntária)",
       "Fechamento (proposta voluntária)",
@@ -102,8 +97,10 @@ const  Programas = () =>{
     for (let i = 0; i < programasData.length; i++) {
 
       var temp = [
-        programasData[i].NomePrograma,
-        programasData[i].CodPrograma,
+        `${programasData[i].CodPrograma}  
+        ${programasData[i].NomePrograma} `,
+        `${programasData[i].CodOrgaoSupPrograma} 
+        ${programasData[i].DescOrgaoSupPrograma}`, 
         programasData[i].DataDisponibilizacao,
         programasData[i].DtProgIniRecebProp|| "-",
         programasData[i].DtProgFimRecebProp|| "-",
@@ -118,13 +115,20 @@ const  Programas = () =>{
       ];
       rows.push(temp);
     }
-    pdf.text(235, 40, "Programas selecionados");
+    if(headerFooter === "true"){
+      pdf.addImage(cabecalhoBase64, 'JPEG', 0, 2, 1200, 100);
+      pdf.autoTable(columns, rows,{
+        cellWidth: "wrap",  
+        startY: 130
+      });
+      pdf.addImage(rodapeBase64, 'JPEG', 950, 792, 240, 52);
+    }else if(headerFooter === "false"){
+      pdf.autoTable(columns, rows,{
+        cellWidth: "wrap",  
+        startY: 20
+      });
+    }
     
-    pdf.autoTable(columns, rows,{
-      cellWidth: "wrap",
-  
-      startY: 20
-    });
     console.log(pdf.output("data out"));
     pdf.save("pdf");
   };
@@ -160,6 +164,27 @@ const  Programas = () =>{
         <Button id="pdfButton" type="submit" variant="danger" onClick={e => fetchProgramas(e)}>
         Gerar pdf
         </Button>
+        <div>
+      <label>
+        <input
+          type="radio"
+          value="true"
+          checked={headerFooter === "true"}
+          onChange={handleHeaderFooterChange}
+        />
+        Adicionar cabeçalho e rodapé
+      </label>
+      <br />
+      <label>
+        <input
+          type="radio"
+          value="false"
+          checked={headerFooter === "false"}
+          onChange={handleHeaderFooterChange}
+        />
+        Remover cabeçalho e rodapé
+      </label>
+    </div>
         <Button id="xlsxButton" type="submit" variant="success" onClick={e => fetchProgramas(e)}>
           Gerar xlsx
         </Button>

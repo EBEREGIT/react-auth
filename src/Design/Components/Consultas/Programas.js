@@ -47,7 +47,7 @@ const  Programas = () =>{
     const urlBase = process.env.REACT_APP_URL_BASE;
     const configuration = {
       method: "get",
-      url: `http://localhost:4000/programas/${anoDisponibilizacao}/${sitPrograma}/${uf}/`,
+      url: `${urlBase}programas/${anoDisponibilizacao}/${sitPrograma}/${uf}/`,
     };
     axios(configuration)
       .then((result) => {

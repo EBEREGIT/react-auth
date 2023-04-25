@@ -47,7 +47,7 @@ const  Programas = () =>{
     const urlBase = process.env.REACT_APP_URL_BASE;
     const configuration = {
       method: "get",
-      url: `${urlBase}programas/${anoDisponibilizacao}/${sitPrograma}/${uf}/`,
+      url: `https://nervous-pink-sunglasses.cyclic.app/programas/${anoDisponibilizacao}/${sitPrograma}/${uf}/`,
     };
     console.log(configuration);
     axios(configuration)

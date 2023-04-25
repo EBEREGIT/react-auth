@@ -49,6 +49,7 @@ const  Programas = () =>{
       method: "get",
       url: `${urlBase}programas/${anoDisponibilizacao}/${sitPrograma}/${uf}/`,
     };
+    console.log(configuration);
     axios(configuration)
       .then((result) => {
         console.log(result);
@@ -67,6 +68,7 @@ const  Programas = () =>{
 
   const printProgramas = async(json) => {
     const programasData = json.data;
+
     const cabecalhoTxt =  await fetch(Timbradosuperior)
       .then(response => response.text())
       .then(text => {return text;});

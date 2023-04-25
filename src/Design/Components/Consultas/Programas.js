@@ -75,7 +75,6 @@ const  Programas = () =>{
       .then(response => response.text())
       .then(text => {return text;});
     var rodapeBase64 = `data:image/png;base64,` + rodapeTxt;
-    debugger;
     const pdf = new jsPDF("l", "pt", "a3");
 
     const columns = [

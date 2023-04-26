@@ -122,7 +122,17 @@ const  Programas = () =>{
         cellWidth: "wrap",  
         startY: 130
       });
-      pdf.addImage(rodapeBase64, 'JPEG', 950, 792, 240, 52);
+      const addFooters = doc => {
+        const pageCount = doc.internal.getNumberOfPages()
+        console.log(pageCount);
+        doc.setFont('helvetica', 'italic')
+        doc.setFontSize(8)
+        for (var i = 1; i <= pageCount; i++) {
+          doc.setPage(i)
+          doc.addImage(rodapeBase64, 'JPEG', 950, 792, 240, 52);
+        }
+      };
+      addFooters(pdf);
     }else if(headerFooter === "false"){
       pdf.autoTable(columns, rows,{
         cellWidth: "wrap",  
@@ -131,17 +141,7 @@ const  Programas = () =>{
     }
     
     console.log(pdf.output("data out"));
-    const addFooters = doc => {
-      const pageCount = doc.internal.getNumberOfPages()
-      console.log(pageCount);
-      doc.setFont('helvetica', 'italic')
-      doc.setFontSize(8)
-      for (var i = 1; i <= pageCount; i++) {
-        doc.setPage(i)
-        doc.addImage(rodapeBase64, 'JPEG', 950, 792, 240, 52);
-      }
-    };
-    addFooters(pdf);
+
     pdf.save("pdf");
   };
  

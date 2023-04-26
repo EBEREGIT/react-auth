@@ -47,7 +47,7 @@ const  Programas = () =>{
     const urlBase = process.env.REACT_APP_URL_BASE;
     const configuration = {
       method: "get",
-      url: `https://nervous-pink-sunglasses.cyclic.app/programas/${anoDisponibilizacao}/${sitPrograma}/${uf}/`,
+      url: `http://localhost:4000/programas/${anoDisponibilizacao}/${sitPrograma}/${uf}/`,
     };
     console.log(configuration);
     axios(configuration)
@@ -120,7 +120,22 @@ const  Programas = () =>{
       pdf.addImage(cabecalhoBase64, 'JPEG', 0, 2, 1200, 100);
       pdf.autoTable(columns, rows,{
         cellWidth: "wrap",  
-        startY: 130
+        startY: 130,
+        columnStyles: {
+          0: {halign: 'center'},
+          1: {halign: 'center'},
+          2: {halign: 'center'},
+          3: {halign: 'center'},
+          4: {halign: 'center'},
+          5: {halign: 'center'},
+          6: {halign: 'center'},
+          7: {halign: 'center'},
+          8: {halign: 'center'},
+          9: {halign: 'center'},
+          10: {halign: 'center'},
+          11: {halign: 'center'},
+          
+        } ,
       });
       const addFooters = doc => {
         const pageCount = doc.internal.getNumberOfPages()
@@ -136,7 +151,21 @@ const  Programas = () =>{
     }else if((headerFooter === "false")||(headerFooter === "")){
       pdf.autoTable(columns, rows,{
         cellWidth: "wrap",  
-        startY: 20
+        startY: 20,
+        columnStyles: {
+          0: {halign: 'center'},
+          1: {halign: 'center'},
+          2: {halign: 'center'},
+          3: {halign: 'center'},
+          4: {halign: 'center'},
+          5: {halign: 'center'},
+          6: {halign: 'center'},
+          7: {halign: 'center'},
+          8: {halign: 'center'},
+          9: {halign: 'center'},
+          10: {halign: 'center'},
+          11: {halign: 'center'},
+        } , 
       });
     }
     

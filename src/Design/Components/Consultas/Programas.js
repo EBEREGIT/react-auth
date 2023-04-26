@@ -133,7 +133,7 @@ const  Programas = () =>{
         }
       };
       addFooters(pdf);
-    }else if(headerFooter === "false"){
+    }else if((headerFooter === "false")||(headerFooter === "")){
       pdf.autoTable(columns, rows,{
         cellWidth: "wrap",  
         startY: 20
@@ -180,7 +180,7 @@ const  Programas = () =>{
       <label>
         <input
           type="radio"
-          value="true"
+          value={true}
           checked={headerFooter === "true"}
           onChange={handleHeaderFooterChange}
         />
@@ -190,7 +190,7 @@ const  Programas = () =>{
       <label>
         <input
           type="radio"
-          value="false"
+          value={false}
           checked={headerFooter === "false"}
           onChange={handleHeaderFooterChange}
         />

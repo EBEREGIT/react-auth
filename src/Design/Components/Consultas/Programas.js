@@ -98,21 +98,21 @@ const  Programas = () =>{
     for (let i = 0; i < programasData.length; i++) {
 
       var temp = [
-        `${programasData[i].CodPrograma}  
-        ${programasData[i].NomePrograma} `,
-        `${programasData[i].CodOrgaoSupPrograma} 
-        ${programasData[i].DescOrgaoSupPrograma}`, 
-        programasData[i].DataDisponibilizacao,
-        programasData[i].DtProgIniRecebProp|| "-",
-        programasData[i].DtProgFimRecebProp|| "-",
-        programasData[i].DtProgIniEmendaPar|| "-",
-        programasData[i].DtProgFimEmendaPar|| "-",
-        programasData[i].DtProgIniBenefEsp|| "-",
-        programasData[i].DtProgFimBenefEsp|| "-",
-        programasData[i].ModalidadePrograma,
-        programasData[i].NaturezaJuridicaPrograma,
-        programasData[i].AcaoOrcamentaria,
-        programasData[i].UfPrograma
+        `${programasData[i].COD_PROGRAMA}  
+        ${programasData[i].NOME_PROGRAMA} `,
+        `${programasData[i].COD_ORGAO_SUP_PROGRAMA} 
+        ${programasData[i].DESC_ORGAO_SUP_PROGRAMA}`, 
+        programasData[i].DATA_DISPONIBILIZACAO,
+        programasData[i].DT_PROG_INI_RECEB_PROP || "-",
+        programasData[i].DT_PROG_FIM_RECEB_PROP || "-",
+        programasData[i].DT_PROG_INI_EMENDA_PAR || "-",
+        programasData[i].DT_PROG_FIM_EMENDA_PAR || "-",
+        programasData[i].DT_PROG_INI_BENEF_ESP || "-",
+        programasData[i].DT_PROG_FIM_BENEF_ESP || "-",
+        programasData[i].MODALIDADE_PROGRAMA,
+        programasData[i].NATUREZA_JURIDICA_PROGRAMA,
+        programasData[i].ACAO_ORCAMENTARIA,
+        programasData[i].UF_PROGRAMA
       ];
       rows.push(temp);
     }

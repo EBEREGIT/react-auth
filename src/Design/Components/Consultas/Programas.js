@@ -65,10 +65,19 @@ const  Programas = () =>{
         error = new Error();
       });
   }
+  const datafix = (anomesdia) =>{
+    if(anomesdia){
+      const splittedData = anomesdia.split('/'); 
+      const fixedArr = splittedData.reverse();
+      const retData = fixedArr.join("/");
+      return retData;
+    }else{
+      return "-";
+    }
+  }
 
   const printProgramas = async(json) => {
     const programasData = json.data;
-
     const cabecalhoTxt =  await fetch(Timbradosuperior)
       .then(response => response.text())
       .then(text => {return text;});
@@ -103,17 +112,18 @@ const  Programas = () =>{
         `${programasData[i].COD_ORGAO_SUP_PROGRAMA} 
         ${programasData[i].DESC_ORGAO_SUP_PROGRAMA}`, 
         programasData[i].DATA_DISPONIBILIZACAO,
-        programasData[i].DT_PROG_INI_RECEB_PROP || "-",
-        programasData[i].DT_PROG_FIM_RECEB_PROP || "-",
-        programasData[i].DT_PROG_INI_EMENDA_PAR || "-",
-        programasData[i].DT_PROG_FIM_EMENDA_PAR || "-",
-        programasData[i].DT_PROG_INI_BENEF_ESP || "-",
-        programasData[i].DT_PROG_FIM_BENEF_ESP || "-",
+        datafix(programasData[i].DT_PROG_INI_RECEB_PROP),
+        datafix(programasData[i].DT_PROG_FIM_RECEB_PROP),
+        datafix(programasData[i].DT_PROG_INI_EMENDA_PAR),
+        datafix(programasData[i].DT_PROG_FIM_EMENDA_PAR),
+        datafix(programasData[i].DT_PROG_INI_BENEF_ESP),
+        datafix(programasData[i].DT_PROG_FIM_BENEF_ESP),
         programasData[i].MODALIDADE_PROGRAMA,
         programasData[i].NATUREZA_JURIDICA_PROGRAMA,
         programasData[i].ACAO_ORCAMENTARIA,
         programasData[i].UF_PROGRAMA
       ];
+      debugger;
       rows.push(temp);
     }
     if(headerFooter === "true"){
@@ -139,7 +149,6 @@ const  Programas = () =>{
       });
       const addFooters = doc => {
         const pageCount = doc.internal.getNumberOfPages()
-        console.log(pageCount);
         doc.setFont('helvetica', 'italic')
         doc.setFontSize(8)
         for (var i = 1; i <= pageCount; i++) {
@@ -147,6 +156,17 @@ const  Programas = () =>{
           doc.addImage(rodapeBase64, 'JPEG', 950, 792, 240, 52);
         }
       };
+
+      const addHeaders = doc => {
+        const pageCount = doc.internal.getNumberOfPages()
+        doc.setFont('helvetica', 'italic')
+        doc.setFontSize(8)
+        for (var i = 1; i <= pageCount; i++) {
+          doc.setPage(i)
+          doc.addImage(cabecalhoBase64, 'JPEG', 0, 2, 1200, 100);
+        }
+      };
+      
       addFooters(pdf);
     }else if((headerFooter === "false")||(headerFooter === "")){
       pdf.autoTable(columns, rows,{

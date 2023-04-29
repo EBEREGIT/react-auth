@@ -49,10 +49,8 @@ const  Programas = () =>{
       method: "get",
       url: `https://nervous-pink-sunglasses.cyclic.app/programas/${anoDisponibilizacao}/${sitPrograma}/${uf}/`,
     };
-    console.log(configuration);
     axios(configuration)
       .then((result) => {
-        console.log(result);
         if(option === "pdfButton"){
           printProgramas(result.data)
         }
@@ -77,7 +75,22 @@ const  Programas = () =>{
   }
 
   const printProgramas = async(json) => {
+    const addDatetime = doc => {
+      const pageCount = doc.internal.getNumberOfPages()
+      doc.setFont('helvetica', 'italic')
+      doc.setFontSize(8)
+      for (var i = 1; i <= pageCount; i++) {
+        doc.setPage(i)
+        doc.text(dataApenas + ", às " + horarioApenas, 20, 830, {
+          align: 'left'
+        });
+      }
+    };
     const programasData = json.data;
+    const dataApenas =  new Date().toLocaleDateString('pt-BR');
+    const horarioApenas = new Date().toLocaleTimeString('en-US', { hour12: false, 
+      hour: "numeric", 
+      minute: "numeric"});
     const cabecalhoTxt =  await fetch(Timbradosuperior)
       .then(response => response.text())
       .then(text => {return text;});
@@ -123,7 +136,6 @@ const  Programas = () =>{
         programasData[i].ACAO_ORCAMENTARIA,
         programasData[i].UF_PROGRAMA
       ];
-      debugger;
       rows.push(temp);
     }
     if(headerFooter === "true"){
@@ -147,6 +159,8 @@ const  Programas = () =>{
           
         } ,
       });
+
+
       const addFooters = doc => {
         const pageCount = doc.internal.getNumberOfPages()
         doc.setFont('helvetica', 'italic')
@@ -156,6 +170,8 @@ const  Programas = () =>{
           doc.addImage(rodapeBase64, 'JPEG', 950, 792, 240, 52);
         }
       };
+
+
 
       const addHeaders = doc => {
         const pageCount = doc.internal.getNumberOfPages()
@@ -188,7 +204,7 @@ const  Programas = () =>{
         } , 
       });
     }
-    
+    addDatetime(pdf);
     console.log(pdf.output("data out"));
 
     pdf.save("pdf");
@@ -203,7 +219,6 @@ const  Programas = () =>{
   })
 
   const gerarXlsx = (data) =>{
-    console.log(data);
     const ws = utils.json_to_sheet(data.data);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Data");

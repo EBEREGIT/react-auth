@@ -17,6 +17,7 @@ const  Programas = () =>{
   const [headerFooter, setHeaderFooter] = useState("");
   const [ufFetched, setUfFetched] = useState(false);
   const [ufOptions, setUfOptions] = useState([]);
+  const [removeEncerrados, setRemoveEncerrados] = useState("");
 
 
   const situationOptions = [
@@ -42,6 +43,10 @@ const  Programas = () =>{
     setHeaderFooter(event.target.value);
   };
 
+  const handleRemoveEncerradosChange = (event) => {
+    setRemoveEncerrados(event.target.value);
+  };
+
   const fetchProgramas = (e) =>{
     const option = e.currentTarget.id;
     const urlBase = process.env.REACT_APP_URL_BASE;
@@ -62,6 +67,30 @@ const  Programas = () =>{
       .catch((error) => {
         error = new Error();
       });
+  }
+  const dataPicker = (dateArrIni, dateArrFim) =>{
+    let returnArr = [];
+
+    for (let i = 0; i < dateArrFim.length; i++){
+      if(dateArrFim[i] != null){
+        returnArr.push(dateArrFim[i])
+      }
+    }
+    for (let i = 0; i < dateArrIni.length; i++){
+      if(dateArrIni[i] != null){
+        returnArr.push(dateArrIni[i])
+      }
+    }
+    if(dateArrIni[0]!= null){
+      returnArr.push("Proposta voluntária");
+    }
+    if(dateArrIni[1] != null){
+      returnArr.push("Emenda parlamentar");
+    }
+    if(dateArrIni[2] != null){
+      returnArr.push("Proponente específico");
+    }
+    return returnArr;
   }
   const datafix = (anomesdia) =>{
     if(anomesdia){
@@ -105,12 +134,9 @@ const  Programas = () =>{
       "Dados do programa",
       "Dados do órgão",
       "Data da disponibilização",
-      "Abertura (proposta voluntária)",
-      "Fechamento (proposta voluntária)",
-      "Abertura (emenda parlamentar)",
-      "Fechamento (emenda parlamentar)",
-      "Abertura (proponente específico)",
-      "Fechamento (proponente específico)",
+      "Abertura",
+      "Fechamento",
+      "Tipo",
       "Modalidade do programa",
       "Natureza jurídica do programa",
       "Ação orçamentária",
@@ -118,6 +144,14 @@ const  Programas = () =>{
     ];
     var rows = [];
     for (let i = 0; i < programasData.length; i++) {
+      const datasETipo = dataPicker([
+        programasData[i].DT_PROG_INI_RECEB_PROP,
+        programasData[i].DT_PROG_INI_EMENDA_PAR,
+        programasData[i].DT_PROG_INI_BENEF_ESP],
+        [programasData[i].DT_PROG_FIM_RECEB_PROP,
+        programasData[i].DT_PROG_FIM_EMENDA_PAR,
+        programasData[i].DT_PROG_FIM_BENEF_ESP,
+      ]);
 
       var temp = [
         `${programasData[i].COD_PROGRAMA}  
@@ -125,18 +159,22 @@ const  Programas = () =>{
         `${programasData[i].COD_ORGAO_SUP_PROGRAMA} 
         ${programasData[i].DESC_ORGAO_SUP_PROGRAMA}`, 
         programasData[i].DATA_DISPONIBILIZACAO,
-        datafix(programasData[i].DT_PROG_INI_RECEB_PROP),
-        datafix(programasData[i].DT_PROG_FIM_RECEB_PROP),
-        datafix(programasData[i].DT_PROG_INI_EMENDA_PAR),
-        datafix(programasData[i].DT_PROG_FIM_EMENDA_PAR),
-        datafix(programasData[i].DT_PROG_INI_BENEF_ESP),
-        datafix(programasData[i].DT_PROG_FIM_BENEF_ESP),
+        datafix(datasETipo[1]),
+        datafix(datasETipo[0]),
+        datasETipo[2],
         programasData[i].MODALIDADE_PROGRAMA,
         programasData[i].NATUREZA_JURIDICA_PROGRAMA,
         programasData[i].ACAO_ORCAMENTARIA,
         programasData[i].UF_PROGRAMA
       ];
-      rows.push(temp);
+      var today = new Date();
+      if (datasETipo[0] > today) {
+        rows.push(temp);
+      } else if (datasETipo[0] < today) {
+        console.log(`Programa ${programasData[i].COD_PROGRAMA}${programasData[i].NOME_PROGRAMA} não está mais disponível.`);
+      } else {
+        rows.push(temp);
+      }
     }
     if(headerFooter === "true"){
       pdf.addImage(cabecalhoBase64, 'JPEG', 0, 2, 1200, 100);
@@ -159,8 +197,6 @@ const  Programas = () =>{
           
         } ,
       });
-
-
       const addFooters = doc => {
         const pageCount = doc.internal.getNumberOfPages()
         doc.setFont('helvetica', 'italic')
@@ -169,20 +205,7 @@ const  Programas = () =>{
           doc.setPage(i)
           doc.addImage(rodapeBase64, 'JPEG', 950, 792, 240, 52);
         }
-      };
-
-
-
-      const addHeaders = doc => {
-        const pageCount = doc.internal.getNumberOfPages()
-        doc.setFont('helvetica', 'italic')
-        doc.setFontSize(8)
-        for (var i = 1; i <= pageCount; i++) {
-          doc.setPage(i)
-          doc.addImage(cabecalhoBase64, 'JPEG', 0, 2, 1200, 100);
-        }
-      };
-      
+      };      
       addFooters(pdf);
     }else if((headerFooter === "false")||(headerFooter === "")){
       pdf.autoTable(columns, rows,{
@@ -241,26 +264,48 @@ const  Programas = () =>{
         Gerar pdf
         </Button>
         <div>
-      <label>
-        <input
-          type="radio"
-          value={true}
-          checked={headerFooter === "true"}
-          onChange={handleHeaderFooterChange}
-        />
-        Adicionar cabeçalho e rodapé
-      </label>
-      <br />
-      <label>
-        <input
-          type="radio"
-          value={false}
-          checked={headerFooter === "false"}
-          onChange={handleHeaderFooterChange}
-        />
-        Remover cabeçalho e rodapé
-      </label>
-    </div>
+          <label>
+            <input
+              type="radio"
+              value={true}
+              checked={headerFooter === "true"}
+              onChange={handleHeaderFooterChange}
+            />
+            Adicionar cabeçalho e rodapé
+          </label>
+          <br />
+          <label>
+            <input
+              type="radio"
+              value={false}
+              checked={headerFooter === "false"}
+              onChange={handleHeaderFooterChange}
+            />
+            Remover cabeçalho e rodapé
+          </label>
+        </div>
+        <hr />
+        <div>
+          <label>
+            <input
+              type="radio"
+              value={true}
+              checked={removeEncerrados === "true"}
+              onChange={handleRemoveEncerradosChange}
+            />
+            Remover programas com prazo encerrado
+          </label>
+          <br />
+          <label>
+            <input
+              type="radio"
+              value={false}
+              checked={removeEncerrados === "false"}
+              onChange={handleRemoveEncerradosChange}
+            />
+            Manter programas com prazo encerrado
+          </label>
+        </div>
         <Button id="xlsxButton" type="submit" variant="success" onClick={e => fetchProgramas(e)}>
           Gerar xlsx
         </Button>

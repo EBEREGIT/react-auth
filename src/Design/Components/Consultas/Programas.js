@@ -167,14 +167,20 @@ const  Programas = () =>{
         programasData[i].ACAO_ORCAMENTARIA,
         programasData[i].UF_PROGRAMA
       ];
-      var today = new Date();
-      if (datasETipo[0] > today) {
-        rows.push(temp);
-      } else if (datasETipo[0] < today) {
-        console.log(`Programa ${programasData[i].COD_PROGRAMA}${programasData[i].NOME_PROGRAMA} não está mais disponível.`);
-      } else {
+      if(removeEncerrados == "true"){
+        var today = new Date();
+        var dateProg = new Date(datasETipo[0]);
+        if (dateProg > today) {
+          rows.push(temp);
+        } else if (dateProg < today) {
+          console.log(`Programa ${programasData[i].COD_PROGRAMA}${programasData[i].NOME_PROGRAMA} não está mais disponível. vencido em ${datafix(datasETipo[0])}`);
+        } else {
+ 
+        }
+      }else{
         rows.push(temp);
       }
+      
     }
     if(headerFooter === "true"){
       pdf.addImage(cabecalhoBase64, 'JPEG', 0, 2, 1200, 100);

@@ -120,6 +120,11 @@ const  Programas = () =>{
     const horarioApenas = new Date().toLocaleTimeString('en-US', { hour12: false, 
       hour: "numeric", 
       minute: "numeric"});
+    console.log(`data apenas: ${dataApenas} ; horario apenas:  ${horarioApenas}`);
+    const dataArr = dataApenas.split('/');
+    const horarioArr = horarioApenas.split(':');
+    let namefile = `${uf}_${dataArr[2]}-${dataArr[1]}-${dataArr[0]}-${horarioArr[0]}\\${horarioArr[1]}`;
+    debugger;
     const cabecalhoTxt =  await fetch(Timbradosuperior)
       .then(response => response.text())
       .then(text => {return text;});
@@ -236,7 +241,7 @@ const  Programas = () =>{
     addDatetime(pdf);
     console.log(pdf.output("data out"));
 
-    pdf.save("pdf");
+    pdf.save(namefile);
   };
  
   useEffect(() => {

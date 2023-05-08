@@ -145,7 +145,7 @@ const  Programas = () =>{
       "Modalidade do programa",
       "Natureza jurídica do programa",
       "Ação orçamentária",
-      "uf programa"
+      "UF"
     ];
     var rows = [];
     for (let i = 0; i < programasData.length; i++) {
@@ -222,19 +222,23 @@ const  Programas = () =>{
       pdf.autoTable(columns, rows,{
         cellWidth: "wrap",  
         startY: 20,
+        headStyles:{
+          valign: 'middle',
+          halign : 'center'
+        },
         columnStyles: {
-          0: {halign: 'center'},
-          1: {halign: 'center'},
-          2: {halign: 'center'},
-          3: {halign: 'center'},
-          4: {halign: 'center'},
-          5: {halign: 'center'},
-          6: {halign: 'center'},
-          7: {halign: 'center'},
-          8: {halign: 'center'},
-          9: {halign: 'center'},
-          10: {halign: 'center'},
-          11: {halign: 'center'},
+          0: {halign: 'center', valign: 'middle',},
+          1: {halign: 'center', valign: 'middle',},
+          2: {halign: 'center', valign: 'middle',},
+          3: {halign: 'center', valign: 'middle',},
+          4: {halign: 'center', valign: 'middle',},
+          5: {halign: 'center', valign: 'middle',},
+          6: {halign: 'center', valign: 'middle',},
+          7: {halign: 'center', valign: 'middle',},
+          8: {halign: 'center', valign: 'middle',},
+          9: {halign: 'center', valign: 'middle',},
+          10: {halign: 'center', valign: 'middle',},
+          11: {halign: 'center', valign: 'middle',},
         } , 
       });
     }

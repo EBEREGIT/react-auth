@@ -29,10 +29,11 @@ const  Convenios = () =>{
       const urlBase = process.env.REACT_APP_URL_BASE;
       const configuration = {
         method: "get",
-        url: `https://nervous-pink-sunglasses.cyclic.app/convenio/${codigoSIAFI}/${cnpj}/${orgaoSiafi}`,
+        url: `http://localhost:4000/convenio/${codigoSIAFI}/${cnpj}/${orgaoSiafi}`,
       };
       await axios(configuration)
         .then((result) => {
+          debugger;
           if (option === "pdfButton"){
             printConvenios(result.data);
           }

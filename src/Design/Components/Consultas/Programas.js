@@ -169,7 +169,7 @@ const  Programas = () =>{
         datasETipo[2],
         programasData[i].MODALIDADE_PROGRAMA,
         programasData[i].NATUREZA_JURIDICA_PROGRAMA,
-        programasData[i].ACAO_ORCAMENTARIA,
+        programasData[i].ACAO_ORCAMENTARIA.slice(-4),
         programasData[i].UF_PROGRAMA
       ];
       if(removeEncerrados == "true"){

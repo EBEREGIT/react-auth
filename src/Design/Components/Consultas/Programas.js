@@ -124,7 +124,6 @@ const  Programas = () =>{
     const dataArr = dataApenas.split('/');
     const horarioArr = horarioApenas.split(':');
     let namefile = `${uf}_${dataArr[2]}-${dataArr[1]}-${dataArr[0]}-${horarioArr[0]}\\${horarioArr[1]}`;
-    debugger;
     const cabecalhoTxt =  await fetch(Timbradosuperior)
       .then(response => response.text())
       .then(text => {return text;});
@@ -157,7 +156,18 @@ const  Programas = () =>{
         programasData[i].DT_PROG_FIM_EMENDA_PAR,
         programasData[i].DT_PROG_FIM_BENEF_ESP,
       ]);
+      const  fixacao = (acao) =>{
+        try{
+          let orc = String(acao)
+          orc = orc.slice(-4);
+          return orc;
+        }
+        catch(e){
+          debugger;
+          console.log(e);
+        }
 
+      }
       var temp = [
         `${programasData[i].COD_PROGRAMA}  
         ${programasData[i].NOME_PROGRAMA} `,
@@ -169,7 +179,7 @@ const  Programas = () =>{
         datasETipo[2],
         programasData[i].MODALIDADE_PROGRAMA,
         programasData[i].NATUREZA_JURIDICA_PROGRAMA,
-        programasData[i].ACAO_ORCAMENTARIA.slice(-4),
+        fixacao(programasData[i].ACAO_ORCAMENTARIA),
         programasData[i].UF_PROGRAMA
       ];
       if(removeEncerrados == "true"){

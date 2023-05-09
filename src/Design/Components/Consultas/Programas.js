@@ -120,7 +120,6 @@ const  Programas = () =>{
     const horarioApenas = new Date().toLocaleTimeString('en-US', { hour12: false, 
       hour: "numeric", 
       minute: "numeric"});
-    console.log(`data apenas: ${dataApenas} ; horario apenas:  ${horarioApenas}`);
     const dataArr = dataApenas.split('/');
     const horarioArr = horarioApenas.split(':');
     let namefile = `${uf}_${dataArr[2]}-${dataArr[1]}-${dataArr[0]}-${horarioArr[0]}\\${horarioArr[1]}`;
@@ -163,7 +162,6 @@ const  Programas = () =>{
           return orc;
         }
         catch(e){
-          debugger;
           console.log(e);
         }
 

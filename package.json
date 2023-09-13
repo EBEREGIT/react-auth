@@ -33,6 +33,7 @@
     "react-to-print": "^2.13.0",
     "react-xls": "^0.1.1",
     "stream": "^0.0.2",
+    "sweetalert2": "^11.7.10",
     "typeof": "^1.0.0",
     "universal-cookie": "^4.0.4",
     "web-vitals": "^0.2.4",

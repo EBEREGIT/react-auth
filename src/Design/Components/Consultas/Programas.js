@@ -1,6 +1,7 @@
 import react, { useEffect, useState } from  'react';
 import { utils, writeFileXLSX } from 'xlsx';
 import { Button } from "react-bootstrap";
+import Swal from 'sweetalert2';
 import Select from 'react-select'
 import axios from "axios";
 import ufList from './../../../Utils/ufs.json';
@@ -47,12 +48,13 @@ const  Programas = () =>{
     setRemoveEncerrados(event.target.value);
   };
 
-  const fetchProgramas = (e) =>{
+  const fetchProgramas = async(e) =>{
+    
     const option = e.currentTarget.id;
     const urlBase = process.env.REACT_APP_URL_BASE;
     const configuration = {
       method: "get",
-      url: `https://nervous-pink-sunglasses.cyclic.app/programas/${anoDisponibilizacao}/${sitPrograma}/${uf}/`,
+      url: `http://localhost:4000/programas/${anoDisponibilizacao}/${sitPrograma}/${uf}/`,
     };
     axios(configuration)
       .then((result) => {
@@ -146,14 +148,31 @@ const  Programas = () =>{
       "UF"
     ];
     var rows = [];
-    for (let i = 0; i < programasData.length; i++) {
+
+    let progAgrupados = [];
+    programasData.forEach(program => {
+      const P_code = program.COD_PROGRAMA;
+      const existingProgram = progAgrupados.find(p => p.COD_PROGRAMA === P_code);
+
+      if (existingProgram) {
+        if (existingProgram.MODALIDADE_PROGRAMA === program.MODALIDADE_PROGRAMA) {
+          existingProgram.NATUREZA_JURIDICA_PROGRAMA += `, ${program.NATUREZA_JURIDICA_PROGRAMA}`;
+        }
+      } else {
+        progAgrupados.push(program);
+      }
+    });
+
+    console.log(progAgrupados);
+  debugger;
+    for (let i = 0; i < progAgrupados.length; i++) {
       const datasETipo = dataPicker([
-        programasData[i].DT_PROG_INI_RECEB_PROP,
-        programasData[i].DT_PROG_INI_EMENDA_PAR,
-        programasData[i].DT_PROG_INI_BENEF_ESP],
-        [programasData[i].DT_PROG_FIM_RECEB_PROP,
-        programasData[i].DT_PROG_FIM_EMENDA_PAR,
-        programasData[i].DT_PROG_FIM_BENEF_ESP,
+        progAgrupados[i].DT_PROG_INI_RECEB_PROP,
+        progAgrupados[i].DT_PROG_INI_EMENDA_PAR,
+        progAgrupados[i].DT_PROG_INI_BENEF_ESP],
+        [progAgrupados[i].DT_PROG_FIM_RECEB_PROP,
+        progAgrupados[i].DT_PROG_FIM_EMENDA_PAR,
+        progAgrupados[i].DT_PROG_FIM_BENEF_ESP,
       ]);
       const  fixacao = (acao) =>{
         try{
@@ -167,18 +186,18 @@ const  Programas = () =>{
 
       }
       var temp = [
-        `${programasData[i].COD_PROGRAMA}  
-        ${programasData[i].NOME_PROGRAMA} `,
-        `${programasData[i].COD_ORGAO_SUP_PROGRAMA} 
-        ${programasData[i].DESC_ORGAO_SUP_PROGRAMA}`, 
-        programasData[i].DATA_DISPONIBILIZACAO,
+        `${progAgrupados[i].COD_PROGRAMA}  
+        ${progAgrupados[i].NOME_PROGRAMA} `,
+        `${progAgrupados[i].COD_ORGAO_SUP_PROGRAMA} 
+        ${progAgrupados[i].DESC_ORGAO_SUP_PROGRAMA}`, 
+        progAgrupados[i].DATA_DISPONIBILIZACAO,
         datafix(datasETipo[1]),
         datafix(datasETipo[0]),
         datasETipo[2],
-        programasData[i].MODALIDADE_PROGRAMA,
-        programasData[i].NATUREZA_JURIDICA_PROGRAMA,
-        fixacao(programasData[i].ACAO_ORCAMENTARIA),
-        programasData[i].UF_PROGRAMA
+        progAgrupados[i].MODALIDADE_PROGRAMA,
+        progAgrupados[i].NATUREZA_JURIDICA_PROGRAMA,
+        fixacao(progAgrupados[i].ACAO_ORCAMENTARIA),
+        progAgrupados[i].UF_PROGRAMA
       ];
       if(removeEncerrados == "true"){
         var today = new Date();
@@ -187,14 +206,13 @@ const  Programas = () =>{
           rows.push(temp);
         } else if (dateProg < today) {
           console.log(`Programa ${programasData[i].COD_PROGRAMA}${programasData[i].NOME_PROGRAMA} não está mais disponível. vencido em ${datafix(datasETipo[0])}`);
-        } else {
- 
-        }
+        }        
       }else{
         rows.push(temp);
       }
       
     }
+
     if(headerFooter === "true"){
       pdf.addImage(cabecalhoBase64, 'JPEG', 0, 2, 1200, 100);
       pdf.autoTable(columns, rows,{
@@ -332,6 +350,7 @@ const  Programas = () =>{
         <Button id="xlsxButton" type="submit" variant="success" onClick={e => fetchProgramas(e)}>
           Gerar xlsx
         </Button>
+        <Button as="input" type="button" value="Input" />{' '}
       </div>
       }
       

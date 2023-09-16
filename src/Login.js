@@ -13,20 +13,20 @@ export default function Login() {
   const handleSubmit = (e) => {
     // prevent the form from refreshing the whole page
     e.preventDefault();
-
     // set configurations
     const configuration = {
-      method: "post",
-      url: "https://nodejs-mongodb-auth-app.herokuapp.com/login",
+      method: "POST",
+      url: "https://nervous-pink-sunglasses.cyclic.app/login",
       data: {
         email,
         password,
       },
     };
-
+    console.log(configuration)
     // make the API call
     axios(configuration)
       .then((result) => {
+        
         // set the cookie
         cookies.set("TOKEN", result.data.token, {
           path: "/",
@@ -37,6 +37,7 @@ export default function Login() {
         setLogin(true);
       })
       .catch((error) => {
+        console.log(error);
         error = new Error();
       });
   };

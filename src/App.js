@@ -10,12 +10,7 @@ function App() {
     <Container>
       <Row>
         <Col className="text-center">
-          <h1>React Authentication Tutorial</h1>
-
           <section id="navigation">
-            <a href="/">Home</a>
-            <a href="/free">Free Component</a>
-            <a href="/auth">Auth Component</a>
           </section>
         </Col>
       </Row>

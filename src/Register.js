@@ -14,14 +14,13 @@ export default function Register() {
 
     // set configurations
     const configuration = {
-      method: "post",
-      url: "https://nodejs-mongodb-auth-app.herokuapp.com/register",
+      method: "POST",
+      url: "https://isaacdev.herokuapp.com/register",
       data: {
         email,
         password,
       },
     };
-
     // make the API call
     axios(configuration)
       .then((result) => {
